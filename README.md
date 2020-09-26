@@ -10,3 +10,5 @@
       ```npm run dev```
  - Install logger
      ```npm install morgan```
+ - Install mongoose
+     ```npm i mongoose```
