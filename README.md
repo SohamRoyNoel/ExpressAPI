@@ -8,3 +8,5 @@
       ```npm i -D nodemon```
  - Run
       ```npm run dev```
+ - Install logger
+     ```npm install morgan```
