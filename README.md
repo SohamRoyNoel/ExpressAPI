@@ -12,3 +12,5 @@
      ```npm install morgan```
  - Install mongoose
      ```npm i mongoose```
+ - Slug
+     ```npm i slugify```
