@@ -14,3 +14,5 @@
      ```npm i mongoose```
  - Slug
      ```npm i slugify```
+ - Geo-Coder
+     ```npm i node-geocoder```

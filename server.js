@@ -26,6 +26,7 @@ app.use(express.json());
 
 // Dev logging Middleware
 if(process.env.NODE_ENV === 'developmemt'){
+      // console.log('Api : ' + process.env.GEOCODER_API_KEY);
       app.use(morgan()); // ::1 - - [Sat, 26 Sep 2020 06:53:29 GMT] "PUT /api/v1/bootcamps/1656 HTTP/1.1" 200 55 "-" "PostmanRuntime/7.26.4"
 }
 
