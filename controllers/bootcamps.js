@@ -85,6 +85,84 @@ exports.getBootcampSelectSort = asyncHandler(async (req, res, next) => {
       })      
 });
 
+// @desc      Pagination upon select-sort; 
+// @routes    Possible Routes
+//            select - GET api/v1/bootcamps/page?page=1  
+//            select - GET api/v1/bootcamps/page?page=1&limit=2 
+//            sort   - GET api/v1/bootcamps/page?page=1&limit=2&select=name  
+//            sortReverse   - GET api/v1/bootcamps/SelectSort?select=name, description,createdAt&sort=-name               
+// @access    Public
+exports.getBootcampPagination = asyncHandler(async (req, res, next) => {
+
+      let query;
+      const requestQuery = {...req.query};
+
+      // Fields to exclude
+      const removeFields  = ["select", "sort", "page", "limit"];
+      // Loop over removeFields and delete them from query
+      removeFields.forEach(param => delete requestQuery[param]);
+
+      let queryString = JSON.stringify(requestQuery);
+      queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+      query = Bootcamp.find(JSON.parse(queryString));
+
+      // Select Fields
+      // On URl : api/v1/bootcamps/filter?select=name, description
+      // Accepted by mongoose : query.select('name description')
+      if(req.query.select){
+            const fields = req.query.select.split(',').join(' ');
+            query = query.select(fields);
+      }
+      // Sort Fields
+      if(req.query.sort){
+            // Custom sort
+            const sortBy = req.query.sort.split(',').join(' ');
+            query = query.sort(sortBy);
+      } else {
+            // Default sort by date
+            query = query.sort('-createdAt');
+      }
+
+      // Pagination
+      const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 2;
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      const total = await Bootcamp.countDocuments();
+
+      query = query.skip(startIndex).limit(limit);
+
+
+      // console.log(queryString);
+      const bootcamp = await query;  
+
+      // Pagination Result : if there is no previous page dont show that, same for next
+      const pagination = {};
+      if(endIndex < total){
+            pagination.next = {
+                  page: page + 1,
+                  limit
+
+            }
+      }
+
+      // Previous link
+      if(startIndex > 0) {
+            pagination.prev = {
+                  page: page - 1,
+                  limit
+            }
+      }
+
+      // Next link
+      res.status(200).json({
+            success: true,
+            count: bootcamp.length,
+            pagination: pagination,
+            data: bootcamp
+      })      
+});
+
 // @desc    Get single bootcamps
 // @route   GET /api/v1/bootcamps/:id
 // @access  Public

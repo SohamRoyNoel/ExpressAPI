@@ -7,7 +7,8 @@ const {
        deleteBootcamps,
        getBootcampsInRadious,
        getBootcampAdvancedFilter,
-       getBootcampSelectSort
+       getBootcampSelectSort,
+       getBootcampPagination
 } = require('../controllers/bootcamps')
 const router = express.Router()
 
@@ -18,6 +19,7 @@ router.route('/')
 router.route('/radius/:zipcode/:distance').get(getBootcampsInRadious);
 router.route('/filter').get(getBootcampAdvancedFilter);
 router.route('/SelectSort').get(getBootcampSelectSort);
+router.route('/page').get(getBootcampPagination);
 
 router.route('/:id')
 .get(getBootcamps)
